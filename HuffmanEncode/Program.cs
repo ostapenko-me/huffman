@@ -48,7 +48,59 @@ namespace HuffmanEncode
             }
         }
     }
-    
+
+    public class HuffmanEncoding
+    {
+        public Dictionary<char, List<bool>> CodeTable = new Dictionary<char, List<bool>>();
+
+        public void SetEncoding(string input)
+        {
+            List<Node> nodes = new List<Node>();
+            Dictionary<char, long> Quantities = new Dictionary<char, long>();
+            Node Root;
+            foreach (char ch in input)
+            {
+                if (!Quantities.ContainsKey(ch))
+                {
+                    Quantities.Add(ch, 0);
+                }
+                Quantities[ch]++;
+            }
+            foreach (KeyValuePair<char, long> element in Quantities)
+            {
+                nodes.Add(new Node() { Symbol = element.Key, Count = element.Value, Terminal = true });
+            }
+            while (nodes.Count != 1)
+            {
+                nodes = nodes.OrderBy(node => node.Count).ToList();
+                Node node1 = nodes[0];
+                Node node2 = nodes[1];
+                Node newNode = new Node();
+                newNode.Count = node1.Count + node2.Count;
+                newNode.Left = node1;
+                newNode.Right = node2;
+                nodes.RemoveRange(0, 2);
+                nodes.Add(newNode);
+            }
+            Root = nodes[0];
+
+            foreach (char ch in Quantities.Keys)
+            {
+                CodeTable.Add(ch, Root.BuildCode(ch, new List<bool>()));
+            }
+        }
+
+        public BitArray Encode(string input)
+        {
+            List<bool> code = new List<bool>();
+            for (int i = 0; i < input.Length; i++)
+            {
+                code.AddRange(CodeTable[input[i]]);
+            }
+            return new BitArray(code.ToArray());
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
