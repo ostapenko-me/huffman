@@ -21,6 +21,10 @@ namespace HuffmanEncode
             {
                 if (Symbol == symbol)
                 {
+                    if (code.Count == 0)
+                    {
+                        code.Add(false);
+                    }
                     return code;
                 }
                 else
@@ -105,7 +109,26 @@ namespace HuffmanEncode
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Введите строку, которую вы хотите закодировать: ");
+            string input = Console.ReadLine();
 
+            HuffmanEncoding huffmanEncoding = new HuffmanEncoding();
+            huffmanEncoding.SetEncoding(input);
+
+            BitArray result = huffmanEncoding.Encode(input);
+            Console.WriteLine("\nДлина исходной строки в битах - {0} бит", input.Length*8);
+            Console.WriteLine("Длина задодированной строки в битах - {0} бит", result.Count);            
+            Console.WriteLine("Закодированная строка: \n");
+            for (int i=0; i<result.Count; i++)
+            {
+                Console.Write(result[i]?1:0);
+                if ((i + 1) % 4 == 0)
+                {
+                    Console.Write(" ");
+                }
+            }
+            Console.WriteLine();
         }
     }
+
 }
